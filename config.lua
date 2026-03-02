@@ -78,6 +78,7 @@ linters.setup {
       "typescript",
       "css",
       "html",
+      "json"
     }
   }
 }
