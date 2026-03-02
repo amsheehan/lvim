@@ -11,6 +11,7 @@ lvim.keys.normal_mode["<leader>mr"] = ":RenderMarkdown toggle<CR>"
 
 vim.keymap.set("n", "<S-l>", ":bnext<CR>", { silent = true })
 vim.keymap.set("n", "<S-h>", ":bprev<CR>", { silent = true })
+vim.opt.clipboard = "unnamedplus"
 vim.opt.relativenumber = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
