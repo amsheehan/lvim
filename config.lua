@@ -4,7 +4,7 @@
 -- Forum: https://www.reddit.com/r/lunarvim/
 -- Discord: https://discord.com/invite/Xb9B4Ny
 
-lvim.format_on_save = true
+lvim.format_on_save.enabled = true
 lvim.colorscheme = "tokyonight"
 lvim.keys.normal_mode["<leader>bd"] = ":Bdelete!<CR>"
 lvim.keys.normal_mode["<leader>mr"] = ":RenderMarkdown toggle<CR>"
@@ -47,6 +47,20 @@ lvim.plugins = {
     dependencies = {
       "nvim-treesitter/nvim-treesitter"
     }
+  },
+  {
+    "stevearc/conform.nvim",
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          ruby = { "standardrb" },
+        },
+        format_on_save = {
+          timeout_ms = 3000,
+          lsp_fallback = false,
+        },
+      })
+    end,
   }
 }
 
@@ -57,17 +71,21 @@ formatters.setup {
     command = "prettier",
     filetypes = {
       "typescript",
+      "typescriptreact",
       "javascript",
+      "javascriptreact",
       "css",
       "html",
       "json",
+      "markdown",
     }
   },
   {
     command = "black",
-    filetypes = { " python" }
+    filetypes = { "python" }
   }
 }
+
 
 local linters = require "lvim.lsp.null-ls.linters"
 
