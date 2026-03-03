@@ -17,7 +17,26 @@ vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.mouse = "a"
 
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tailwindcss" })
+-- Cmd+\ for floating terminal (Ghostty sends \x1b[92;9u for super+backslash)
+vim.keymap.set("n", "\x1b[92;9u", ":ToggleTerm direction=float<CR>", { silent = true })
+vim.keymap.set("t", "\x1b[92;9u", "<C-\\><C-n>:ToggleTerm direction=float<CR>", { silent = true })
+
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tailwindcss", "solargraph" })
+
+-- Solargraph for intellisense only (no formatting/diagnostics — StandardRB handles those)
+local lspconfig = require("lspconfig")
+lspconfig.solargraph.setup({
+  on_attach = function(client, bufnr)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+  settings = {
+    solargraph = {
+      diagnostics = false,
+      formatting = false,
+    }
+  }
+})
 
 lvim.builtin.telescope.defaults.vimgrep_arguments = {
   "/opt/homebrew/bin/rg",
@@ -48,20 +67,6 @@ lvim.plugins = {
       "nvim-treesitter/nvim-treesitter"
     }
   },
-  {
-    "stevearc/conform.nvim",
-    config = function()
-      require("conform").setup({
-        formatters_by_ft = {
-          ruby = { "standardrb" },
-        },
-        format_on_save = {
-          timeout_ms = 3000,
-          lsp_fallback = false,
-        },
-      })
-    end,
-  }
 }
 
 local formatters = require "lvim.lsp.null-ls.formatters"
@@ -101,6 +106,18 @@ linters.setup {
     }
   }
 }
+
+-- StandardRB LSP (runs as a persistent server, formats instantly)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ruby",
+  callback = function()
+    vim.lsp.start({
+      name = "standardrb",
+      cmd = { "standardrb", "--lsp" },
+      root_dir = vim.fs.dirname(vim.fs.find({ ".standard.yml", "Gemfile" }, { upward = true })[1]),
+    })
+  end,
+})
 
 -- Dashboard ASCII art
 lvim.builtin.alpha.dashboard.section.header.val = {
