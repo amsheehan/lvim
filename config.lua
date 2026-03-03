@@ -17,9 +17,9 @@ vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.mouse = "a"
 
--- Cmd+\ for floating terminal (Ghostty sends \x1b[92;9u for super+backslash)
-vim.keymap.set("n", "\x1b[92;9u", ":ToggleTerm direction=float<CR>", { silent = true })
-vim.keymap.set("t", "\x1b[92;9u", "<C-\\><C-n>:ToggleTerm direction=float<CR>", { silent = true })
+-- Cmd+\ for floating terminal (Ghostty remaps Cmd+\ to Ctrl+\, which is \x1c)
+vim.keymap.set("n", "<C-\\>", ":ToggleTerm direction=float<CR>", { silent = true })
+vim.keymap.set("t", "<C-\\>", "<C-\\><C-n>:ToggleTerm direction=float<CR>", { silent = true })
 
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tailwindcss", "solargraph" })
 
